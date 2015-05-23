@@ -3,17 +3,40 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
+    android:background="@color/black">
 
-    <TextView android:text="NeuroDex"
-        android:layout_width="300dp"
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+
+        android:src="@drawable/brain"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:gravity="center"
-        android:textColor="#345677"
+        android:textSize="40sp"
+        android:layout_marginTop ="50dp"
+        android:layout_above="@id/imageView1"
+        android:text="Welcome!"
         android:id="@+id/textView"
-        android:layout_marginTop="153dp"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="#fff5fff8" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Progress"
+        android:id="@+id/goToGraph"
+
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -21,18 +44,10 @@
         android:layout_height="wrap_content"
         android:text="Record"
         android:id="@+id/goToRecorder"
-        android:layout_alignTop="@+id/goToGraph"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Progress"
-        android:id="@+id/goToGraph"
-        android:layout_marginBottom="44dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_above="@+id/goToGraph"
+        android:layout_alignLeft="@+id/goToGraph"
+        android:layout_alignStart="@+id/goToGraph"
+        android:layout_alignRight="@+id/goToGraph"
+        android:layout_alignEnd="@+id/goToGraph" />
 
 </RelativeLayout>

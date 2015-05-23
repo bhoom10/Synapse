@@ -12,6 +12,7 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ public class RecorderActivity extends Activity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_DISABLE_BT = 0;
     int pairedFlag = 0;
+    double sum = 0;
+    int count = 0;
 
     BluetoothAdapter mBluetoothAdapter;
     Switch btSelect;
@@ -55,6 +58,8 @@ public class RecorderActivity extends Activity {
     TextView mindWaveIndicator;
     TextView attentionIndicator;
     TextView meditationIndicator;
+
+    Button btnStop;
     /*
     TextView channel1;
     TextView channel2;
@@ -85,25 +90,21 @@ public class RecorderActivity extends Activity {
             btSelect.setClickable(false);
             pairedIndicator.setText("Bluetooth not supported.");
 
-        }
-
-        else{
+        } else {
             list = new ArrayList<>(); //The '<>' indicates String. No need of explicit declaration, it seems.
 
             pairedDevices = mBluetoothAdapter.getBondedDevices();
 
-            if (pairedDevices.size() > 0)
-            {
-                for (BluetoothDevice device : pairedDevices)
-                {
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
                     list.add(device.getName() + "," + device.getAddress());
-                    if(device.getName().startsWith("Mind")){
+                    if (device.getName().startsWith("Mind")) {
                         pairedIndicator.setText("MindWave Mobile is paired.");
-                        pairedFlag=1;
+                        pairedFlag = 1;
                     }
                 }
 
-                if(pairedFlag==0){
+                if (pairedFlag == 0) {
                     pairedIndicator.setText("MindWave Mobile is not paired.");
                 }
             }
@@ -111,24 +112,21 @@ public class RecorderActivity extends Activity {
             if (mBluetoothAdapter.isEnabled()) {
                 btSelect.setChecked(true);
                 tgDevice = new TGDevice(mBluetoothAdapter, handler);
-                Toast.makeText(getApplicationContext(), "The handler shit is done...",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "The handler shit is done...", Toast.LENGTH_SHORT).show();
             }
 
-            if(tgDevice.getState() != TGDevice.STATE_CONNECTING && tgDevice.getState() != TGDevice.STATE_CONNECTED)
+            if (tgDevice.getState() != TGDevice.STATE_CONNECTING && tgDevice.getState() != TGDevice.STATE_CONNECTED)
                 tgDevice.connect(rawEnabled);
-
 
 
             btSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked){
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if(isChecked){
+                    if (isChecked) {
                         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                    }
-
-                    else{
+                    } else {
 
                         Intent disableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                         startActivityForResult(disableBtIntent, REQUEST_DISABLE_BT);
@@ -137,6 +135,7 @@ public class RecorderActivity extends Activity {
                 }
             });
         }
+        addListenerOnButton();
     }
 
 
@@ -168,6 +167,7 @@ public class RecorderActivity extends Activity {
         super.onDestroy();
         tgDevice.close();
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -210,13 +210,10 @@ public class RecorderActivity extends Activity {
                     break;
                 case TGDevice.MSG_POOR_SIGNAL:
                     //myTextView = (TextView) findViewById(R.id.signal);
-                    if(msg.arg1 == 0)
-                    {
+                    if (msg.arg1 == 0) {
                         //Toast.makeText(getApplicationContext(), "Great Signal!",Toast.LENGTH_SHORT).show();
                         //myTextView.setText("Great");
-                    }
-                    else if(msg.arg1 > 50)
-                    {
+                    } else if (msg.arg1 > 50) {
                         //Toast.makeText(getApplicationContext(), "Poor signal; please adjust headset.",Toast.LENGTH_SHORT).show();
                         //myTextView.setText("Poor, please readjust headset.");
                     }
@@ -225,11 +222,14 @@ public class RecorderActivity extends Activity {
                     //mProgress = (ProgressBar) findViewById(R.id.attentionBar);
                     //mProgress.setProgress(msg.arg1);
                     //Toast.makeText(getApplicationContext(), "Attention:"+msg.arg1,Toast.LENGTH_SHORT).show();
-                    saveData(msg.arg1);
-                    attentionIndicator.setText("Attention: "+msg.arg1);
+                    //saveData(msg.arg1);
+                    sum += msg.arg1;
+                    count++;
+
+                    attentionIndicator.setText("Attention: " + msg.arg1);
                     break;
                 case TGDevice.MSG_MEDITATION:
-                    meditationIndicator.setText("Meditation: "+msg.arg1);
+                    meditationIndicator.setText("Meditation: " + msg.arg1);
                     break;
                 case TGDevice.MSG_BLINK:
                     //tv.append("Blink: " + msg.arg1 + "\n");
@@ -264,7 +264,7 @@ public class RecorderActivity extends Activity {
                     //channel8.setText("Theta: " + fbands.theta);
                     break;
                 case TGDevice.MSG_LOW_BATTERY:
-                    Toast.makeText(getApplicationContext(), "Low battery!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Low battery!", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -274,8 +274,7 @@ public class RecorderActivity extends Activity {
     };
 
 
-
-    void assignVariables(){
+    void assignVariables() {
         btSelect = (Switch) findViewById(R.id.btSwitch);
         pairedIndicator = (TextView) findViewById(R.id.pairedStatus);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -283,6 +282,8 @@ public class RecorderActivity extends Activity {
         mindWaveIndicator = (TextView) findViewById(R.id.mindwaveStatus);
         attentionIndicator = (TextView) findViewById(R.id.attentionLabel);
         meditationIndicator = (TextView) findViewById(R.id.meditationLabel);
+
+        btnStop = (Button) findViewById(R.id.stopButton);
     /*
         channel1 = (TextView) findViewById(R.id.ch1);
         channel2 = (TextView) findViewById(R.id.ch2);
@@ -296,10 +297,6 @@ public class RecorderActivity extends Activity {
     }
 
 
-
-
-
-
     public void saveData(int passData) {
         String filename = "/sdcard/myfile.txt";
         //String string = "1,2,3,4\n";
@@ -311,12 +308,13 @@ public class RecorderActivity extends Activity {
             dir.mkdirs();
 
 
-            File file = new File(dir,"filename");
+            File file = new File(dir, "filename");
 
             System.out.println(passData);
             FileOutputStream f = new FileOutputStream(file, true);
 
             String string1 = new Integer(passData).toString();
+            string1 = string1 + "\n";
 
             //f.write(string.getBytes());
             //bf.write(passData.getBytes());
@@ -326,8 +324,6 @@ public class RecorderActivity extends Activity {
             e.printStackTrace();
         }
     }
-
-
 
 
     public static class ReadCVS {
@@ -381,10 +377,10 @@ public class RecorderActivity extends Activity {
 
     public void readFile(View v) {
         File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File (sdCard.getAbsolutePath() + "/synapse/");
+        File dir = new File(sdCard.getAbsolutePath() + "/synapse/");
 
 
-        File file = new File(dir,"filename");
+        File file = new File(dir, "filename");
 
         StringBuilder text = new StringBuilder();
         try {
@@ -396,8 +392,7 @@ public class RecorderActivity extends Activity {
                 text.append('\n');
             }
             br.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             //You'll need to add proper error handling here
         }
 
@@ -409,4 +404,21 @@ public class RecorderActivity extends Activity {
 
     }
 
+    public void addListenerOnButton() {
+
+        btnStop = (Button) findViewById(R.id.stopButton);
+        btnStop.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                saveData((int) (sum / count));
+                sum = 0;
+                count = 0;
+
+            }
+
+        });
+
+    }
 }

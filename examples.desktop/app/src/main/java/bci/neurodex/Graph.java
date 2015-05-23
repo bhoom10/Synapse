@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -38,8 +40,17 @@ public class Graph extends Activity {
             String line;
 
             while ((line = br.readLine()) != null) {
+                int foo = Integer.parseInt(line);
                 text.append(line);
                 text.append('\n');
+                //System.out.println(foo);
+                //Toast.makeText(getApplicationContext(), foo, Toast.LENGTH_SHORT).show();
+
+                String string1 = new Integer(foo).toString();
+                TextView tv = (TextView)findViewById(R.id.indicator);
+                tv.setText(string1);
+
+
             }
             br.close();
         }
@@ -48,10 +59,10 @@ public class Graph extends Activity {
         }
 
 //Find the view by its id
-        TextView tv = (TextView)findViewById(R.id.indicator);
+        //TextView tv = (TextView)findViewById(R.id.indicator);
 
 //Set the text
-        tv.setText(text);
+        //tv.setText(text);
 
     }
 
