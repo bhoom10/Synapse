@@ -6,10 +6,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +21,12 @@ import com.neurosky.thinkgear.TGDevice;
 import com.neurosky.thinkgear.TGEegPower;
 import com.neurosky.thinkgear.TGRawMulti;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -218,6 +226,7 @@ public class RecorderActivity extends Activity {
                     //mProgress.setProgress(msg.arg1);
                     //Toast.makeText(getApplicationContext(), "Attention:"+msg.arg1,Toast.LENGTH_SHORT).show();
                     attentionIndicator.setText("Attention: "+msg.arg1);
+                    saveData(msg.arg1);
                     break;
                 case TGDevice.MSG_MEDITATION:
                     meditationIndicator.setText("Meditation: "+msg.arg1);
@@ -285,4 +294,118 @@ public class RecorderActivity extends Activity {
         channel8 = (TextView) findViewById(R.id.ch8);
         */
     }
+
+
+
+
+
+
+    public void saveData(int passData) {
+        String filename = "/sdcard/myfile.txt";
+        //String string = "1,2,3,4\n";
+        FileOutputStream outputStream;
+
+        try {
+            File sdCard = Environment.getExternalStorageDirectory();
+            File dir = new File(sdCard.getAbsolutePath() + "/synapse/");
+            dir.mkdirs();
+
+
+            File file = new File(dir,"filename");
+
+
+            FileOutputStream f = new FileOutputStream(file, true);
+
+
+            //f.write(string.getBytes());
+            //bf.write(passData.getBytes());
+            f.write((byte)passData);
+            f.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public static class ReadCVS {
+
+        public static void main(String[] args) {
+
+            ReadCVS obj = new ReadCVS();
+            obj.run();
+
+        }
+
+        public void run() {
+
+            String csvFile = "/synapse/filename";
+            BufferedReader br = null;
+            String line;
+            String cvsSplitBy = ",";
+
+            try {
+
+                br = new BufferedReader(new FileReader(csvFile));
+                while ((line = br.readLine()) != null) {
+
+                    // use comma as separator
+                    String[] country = line.split(cvsSplitBy);
+
+                    System.out.println("Country [code= " + country[0]
+                            + " , name=" + country[1] + "]");
+
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            System.out.println("Done");
+        }
+
+    }
+
+
+    public void readFile(View v) {
+        File sdCard = Environment.getExternalStorageDirectory();
+        File dir = new File (sdCard.getAbsolutePath() + "/synapse/");
+
+
+        File file = new File(dir,"filename");
+
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+
+//Find the view by its id
+        //TextView tv = (TextView)findViewById(R.id.text_view);
+
+//Set the text
+        //tv.setText(text);
+
+    }
+
 }
