@@ -1,5 +1,9 @@
 package com.abhiramrk.myapplication;
 
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.content.Context;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +20,10 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -36,7 +44,17 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtEditor=(EditText)findViewById(R.id.textbox);
+        //txtEditor=(EditText)findViewById(R.id.textbox);
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                new DataPoint(0, 1),
+                new DataPoint(1, 5),
+                new DataPoint(2, 3),
+                new DataPoint(3, 2),
+                new DataPoint(4, 6)
+        });
+        graph.addSeries(series);
     }
 
     /* Checks if external storage is available for read and write */
@@ -142,10 +160,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
 //Find the view by its id
-        TextView tv = (TextView)findViewById(R.id.text_view);
+        //TextView tv = (TextView)findViewById(R.id.text_view);
 
 //Set the text
-        tv.setText(text);
+       // tv.setText(text);
 
     }
     @Override
@@ -170,4 +188,5 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
 
