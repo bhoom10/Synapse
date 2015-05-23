@@ -11,15 +11,19 @@ import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    Button btnStartAnotherActivity;
+    Button btnStartRecording;
+    Button btnViewProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnStartAnotherActivity = (Button) findViewById(R.id.goToRecorder);
-        btnStartAnotherActivity.setOnClickListener(this);
+        btnStartRecording = (Button) findViewById(R.id.goToRecorder);
+        btnStartRecording.setOnClickListener(this);
+
+        btnViewProgress = (Button) findViewById(R.id.goToGraph);
+        btnViewProgress.setOnClickListener(this);
     }
 
     @Override
@@ -47,12 +51,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-            Intent intent = new Intent(this, RecorderActivity.class);
+        switch (view.getId()) {
+            case R.id.goToRecorder:
+                Intent intent_record = new Intent(this, RecorderActivity.class);
+                // calling an activity using <intent-filter> action name
+                //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+                startActivity(intent_record);
+                break;
 
-            // calling an activity using <intent-filter> action name
-            //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+            case R.id.goToGraph:
+                Intent intent_graph = new Intent(this, Graph.class);
+                // calling an activity using <intent-filter> action name
+                //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+                startActivity(intent_graph);
+                break;
 
-            startActivity(intent);
+            default:
+                break;
 
+        }
     }
 }

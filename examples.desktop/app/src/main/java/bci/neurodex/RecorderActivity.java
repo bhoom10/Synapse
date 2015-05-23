@@ -225,8 +225,8 @@ public class RecorderActivity extends Activity {
                     //mProgress = (ProgressBar) findViewById(R.id.attentionBar);
                     //mProgress.setProgress(msg.arg1);
                     //Toast.makeText(getApplicationContext(), "Attention:"+msg.arg1,Toast.LENGTH_SHORT).show();
-                    attentionIndicator.setText("Attention: "+msg.arg1);
                     saveData(msg.arg1);
+                    attentionIndicator.setText("Attention: "+msg.arg1);
                     break;
                 case TGDevice.MSG_MEDITATION:
                     meditationIndicator.setText("Meditation: "+msg.arg1);
@@ -313,13 +313,14 @@ public class RecorderActivity extends Activity {
 
             File file = new File(dir,"filename");
 
-
+            System.out.println(passData);
             FileOutputStream f = new FileOutputStream(file, true);
 
+            String string1 = new Integer(passData).toString();
 
             //f.write(string.getBytes());
             //bf.write(passData.getBytes());
-            f.write((byte)passData);
+            f.write(string1.getBytes());
             f.close();
         } catch (Exception e) {
             e.printStackTrace();
