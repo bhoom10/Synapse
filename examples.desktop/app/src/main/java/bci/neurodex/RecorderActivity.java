@@ -112,7 +112,7 @@ public class RecorderActivity extends Activity {
             if (mBluetoothAdapter.isEnabled()) {
                 btSelect.setChecked(true);
                 tgDevice = new TGDevice(mBluetoothAdapter, handler);
-                Toast.makeText(getApplicationContext(), "The handler shit is done...", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "The handler shit is done...", Toast.LENGTH_SHORT).show();
             }
 
             if (tgDevice.getState() != TGDevice.STATE_CONNECTING && tgDevice.getState() != TGDevice.STATE_CONNECTED)
